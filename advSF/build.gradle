@@ -1,0 +1,58 @@
+// COMP5911M Coursework 1, Task 3
+
+plugins {
+  id 'java-library'
+  id 'idea'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testImplementation(
+    'org.junit.jupiter:junit-jupiter-api:5.9.1',
+    'org.hamcrest:hamcrest:2.2'
+  )
+  testRuntimeOnly(
+    'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+  )
+}
+
+test {
+  useJUnitPlatform()
+
+  testLogging {
+    events 'PASSED', 'FAILED', 'SKIPPED'
+  }
+}
+
+javadoc {
+  options.addBooleanOption('html5', true)   // Needs JDK 9 or newer
+}
+
+idea {
+  module {
+    sourceDirs += file('src/main/java')
+    testSourceDirs += file('src/test/java')
+    inheritOutputDirs = false
+    outputDir = file('build/classes/java/main')
+    testOutputDir = file('build/classes/java/test')
+  }
+}
+
+task submission(type: Zip) {
+  group 'Submission'
+  description 'Generates Zip archive suitable for submission to Gradescope.'
+
+  archiveFileName = 'cwk1_submission.zip'
+  destinationDirectory = project.rootDir
+
+  from("$project.rootDir") {
+    exclude 'cwk1.zip', 'cwk1_submission.zip', '.idea', '.gradle', 'build'
+  }
+
+  doLast {
+    logger.warn("cwk1_submission.zip generated.")
+  }
+}
